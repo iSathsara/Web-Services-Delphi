@@ -10,7 +10,6 @@ object Form1: TForm1
   Font.Height = -20
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 24
@@ -22,27 +21,10 @@ object Form1: TForm1
     Align = alTop
     Caption = 'TopPanel'
     TabOrder = 0
-    object BtnGet: TButton
-      Left = 671
-      Top = 1
-      Width = 75
-      Height = 39
-      Cursor = crHandPoint
-      Align = alRight
-      Caption = 'GET'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -20
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-      OnClick = BtnGetClick
-    end
     object EdtUrl: TEdit
       Left = 1
       Top = 1
-      Width = 670
+      Width = 745
       Height = 39
       Cursor = crIBeam
       Hint = 'Type URL'
@@ -55,9 +37,10 @@ object Form1: TForm1
       Font.Name = 'Consolas'
       Font.Style = []
       ParentFont = False
-      TabOrder = 1
+      TabOrder = 0
       Text = 'https://www.freecodecamp.org/'
-      ExplicitHeight = 31
+      ExplicitLeft = 2
+      ExplicitTop = -3
     end
   end
   object BottomPanel: TPanel
@@ -89,8 +72,6 @@ object Form1: TForm1
         'ResponseMemo')
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = -5
-      ExplicitTop = 5
     end
     object BitBtn1: TBitBtn
       AlignWithMargins = True
@@ -109,6 +90,40 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 1
     end
+    object BtnGet: TButton
+      AlignWithMargins = True
+      Left = 671
+      Top = 2
+      Width = 75
+      Height = 39
+      Cursor = crHandPoint
+      Caption = 'GET'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -20
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+      OnClick = BtnGetClick
+    end
+  end
+  object Button1: TButton
+    AlignWithMargins = True
+    Left = 671
+    Top = 88
+    Width = 75
+    Height = 39
+    Cursor = crHandPoint
+    Caption = 'POST'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 2
+    OnClick = BtnPostClick
   end
   object HTTPClient: TNetHTTPClient
     UserAgent = 'Embarcadero URI Client/1.0'
