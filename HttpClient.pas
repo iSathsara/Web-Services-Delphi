@@ -24,12 +24,16 @@ type
     BodyMemo: TMemo;
     BtnResetBody: TButton;
     BtnResetResponse: TButton;
+    lblResponseMessage: TLabel;
+    lblBodyRequest: TLabel;
+    BtnDefaultUrl: TButton;
     procedure BtnGetClick(Sender: TObject);
     procedure BtnPostClick(Sender: TObject);
     procedure BtnPutClick(Sender: TObject);
     procedure BtnDeleteClick(Sender: TObject);
     procedure BtnResetResponseClick(Sender: TObject);
     procedure BtnResetBodyClick(Sender: TObject);
+    procedure BtnDefaultUrlCkick(Sender: TObject);
     procedure HTTPRequestRequestCompleted(const Sender: TObject;
       const AResponse: IHTTPResponse);
   private
@@ -42,6 +46,9 @@ var
   Form1: TForm1;
 
 implementation
+
+uses
+  System.JSON;
 
 {$R *.dfm}
 {______________________________________________________________________________}
@@ -59,24 +66,36 @@ end;
 procedure TForm1.BtnPostClick(Sender: TObject);
 Var
   IContentStream: TStringStream;
+  IJSONString: TJSONString;
 begin
   // Get Memo input -> encode into utf8, then assign into IContentStream
-  IContentStream:= TStringStream.Create(BodyMemo.Lines.Text, TEncoding.UTF8);
+  IJSONString:= TJSONString.Create(BodyMemo.Lines.Text);
+  IContentStream:= TStringStream.Create(IJSONString.ToJSON([TJSONAncestor.TJSONOutputOption.EncodeBelow32]), TEncoding.UTF8);
   IContentStream.Seek(0,TSeekOrigin.soBeginning);
   HTTPRequest.Post(EdtUrl.Text, IContentStream, nil, nil);
+  IJSONString.Free;
 end;
 {______________________________________________________________________________}
 // Put Click
 procedure TForm1.BtnPutClick(Sender: TObject);
 Var
   IContentStream: TStringStream;
+  IJSONString: TJSONString;
 begin
-  IContentStream:= TStringStream.Create(BodyMemo.Lines.Text, TEncoding.UTF8);
+  IJSONString:= TJSONString.Create(BodyMemo.Lines.Text);
+  IContentStream:= TStringStream.Create(IJSONString.ToJSON([TJSONAncestor.TJSONOutputOption.EncodeBelow32]), TEncoding.UTF8);
   IContentStream.Seek(0,TSeekOrigin.soBeginning);
   HTTPRequest.Put(EdtUrl.Text, IContentStream, nil, nil);
+  IJSONString.Free;
 end;
 {______________________________________________________________________________}
-// Delete Click
+// Set Default URL
+procedure TForm1.BtnDefaultUrlCkick(Sender: TObject);
+begin
+  EdtUrl.Text:='http://localhost:8080/'
+end;
+{______________________________________________________________________________}
+// Delete click
 procedure TForm1.BtnDeleteClick(Sender: TObject);
 begin
 

@@ -66,7 +66,7 @@ begin
       Result:= IParameters;
   end;
 end;
-{______________________________________________________________________________} // Get Request Executor
+{______________________________________________________________________________} // Get Request Executor - Default
 procedure TWebModule1.WebModule1DefaultHandlerAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
@@ -109,10 +109,10 @@ begin
     IKey:=IParameters[0];
 
   if not (IKey.IsEmpty) then begin
-    Response.ContentType := 'text/html; charset=utf-8';
+    Response.ContentType := 'application/json; charset=utf-8';
     gKeyValueStore.TryGetValue(IKey, IValue);
     if not (IValue.IsEmpty) then
-      Response.Content := IValue else
+      Response.Content := '{"result":['+IValue+']}' else
       Response.Content := '404 Requesting page not found!';
     Handled:= true;
   end else Handled:= false;
@@ -169,7 +169,7 @@ begin
     end else Handled := False;
   end;
 end;
-{______________________________________________________________________________}  // Default GET Request
+{______________________________________________________________________________}
 procedure TWebModule1.WebModule1InformationAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
@@ -189,7 +189,7 @@ begin
     '</body>'+
     '</html>';
 end;
-{______________________________________________________________________________}  // GET Request - test
+{______________________________________________________________________________}
 procedure TWebModule1.WebModule1NumberActionAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
