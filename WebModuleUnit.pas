@@ -203,10 +203,11 @@ begin
     '</body>'+
     '</html>';
 end;
-procedure TWebModule1.WebModule1JavaScriptAction(Sender: TObject;
+procedure TWebModule1.WebModule1JavaScriptAction(Sender: TObject;               // execute javascript
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
-
+  Response.ContentType := 'text/html; charset='+TEncoding.UTF8.MIMEName;
+  Response.Content := javascript;
 end;
 
 {_____________________________________________________________________________}
