@@ -21,6 +21,8 @@ type
       Response: TWebResponse; var Handled: Boolean);
     procedure WebModule1DeleteValueAction(Sender: TObject; Request: TWebRequest;
       Response: TWebResponse; var Handled: Boolean);
+    procedure WebModule1JavaScriptAction(Sender: TObject; Request: TWebRequest;
+      Response: TWebResponse; var Handled: Boolean);
   private
     { Private declarations }
     function GetParameters(const aActionPath, aRequestPath: String): TStringDynArray;
@@ -43,7 +45,9 @@ uses
 Var
   // global dictionary variable
   gKeyValueStore: TDictionary<String, String>;
-  career, contactUs, documentation : String;
+  career, contactUs, documentation, javascript: string;
+  gLock: TObject;
+
 {______________________________________________________________________________}
 {______________________________________________________________________________}
 {______________________________________________________________________________}  // Parse Parameters of URL
@@ -165,8 +169,15 @@ begin
       IValue := Request.Content;
 
     if not (IValue.IsEmpty) then begin
-      Response.ContentType := 'application/json; charset=utf-8';
-      gKeyValueStore.AddOrSetValue(IKey, IValue);     // See difference in POST
+      Response.ContentType := 'application/json; charset='+TEncoding.UTF8.MIMEName;
+      // apply gLock
+      if TMonitor.Enter(gLock, 500) then begin
+        try
+          gKeyValueStore.AddOrSetValue(IKey, IValue);
+        finally
+          TMonitor.Exit(gLock);
+        end;
+      end;
       Response.Content := '{"result":"success"}';
       Handled := True;
     end else Handled := False;
@@ -192,7 +203,13 @@ begin
     '</body>'+
     '</html>';
 end;
-{______________________________________________________________________________}
+procedure TWebModule1.WebModule1JavaScriptAction(Sender: TObject;
+  Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+begin
+
+end;
+
+{_____________________________________________________________________________}
 procedure TWebModule1.WebModule1NumberActionAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
@@ -202,7 +219,7 @@ end;
 {______________________________________________________________________________}
 {______________________________________________________________________________}
 {______________________________________________________________________________}
-initialization                                                                    // Global Initializations
+initialization                                                                  // Global Initializations
 
   career :=
   '<html>'+
@@ -227,7 +244,7 @@ initialization                                                                  
     '<p>Hire Any Developer? Just Hangout with Us!</p>'+
     '<p>Our Contacts'+
     '<ul>'+
-      '<li>Address: No 141, Maya Avenue, Kirulapone, Colombo 05</li>'+
+      '<li>Address: No 115, Maya Avenue, Kirulapone, Colombo 05</li>'+
       '<li>Email: into@itelligence-services.com</li>'+
     '</ul>'+
     '<p>Write Us'+
@@ -241,6 +258,22 @@ initialization                                                                  
   '</body>'+
   '</html>';
 
+  javascript:=
+  '<html>'+
+  '<header><h2>Call Number with JavaScript</h2></header>'+
+  '<body>'+
+  '<button onclick="getNumber()">Get Number in Console log (view Ctrl+Shift+I)</button>'+
+  '<script type="text/javascript">'+
+  'function getNumber() {'+
+  '  let url = ''http://localhost:8080/Number'';'+
+  '  fetch(url).then(resp=> resp.json().then(j=> console.log(''\nNumber:'',j)))'+
+  '}'+
+  '</script>'+
+  '</body>'+
+  '</html>';
+
+  // lock the dictionary, avoid deadlock kind of situations...
+  gLock := TObject.Create;
   gKeyValueStore := TDictionary<String, String>.Create;
   gKeyValueStore.Add('0','Zero');
   gKeyValueStore.Add('career', career);

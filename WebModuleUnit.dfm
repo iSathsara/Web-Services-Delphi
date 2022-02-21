@@ -41,6 +41,12 @@ object WebModule1: TWebModule1
       Name = 'DeleteValue'
       PathInfo = '/KeyValue*'
       OnAction = WebModule1DeleteValueAction
+    end
+    item
+      MethodType = mtGet
+      Name = 'JavaScript'
+      PathInfo = '/javascript'
+      OnAction = WebModule1JavaScriptAction
     end>
   Height = 230
   Width = 415
