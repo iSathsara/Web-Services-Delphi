@@ -89,7 +89,7 @@ begin
     IKey := IParameters[0];
     Response.ContentType := 'application/json; charset=utf-8';
     gKeyValueStore.Remove(IKey);
-    Response.Content := '{"result:[]"}';
+    Response.Content := '{"result":"success"}';
     Handled := True;
   end else Handled := False;
 end;
@@ -113,7 +113,7 @@ begin
     gKeyValueStore.TryGetValue(IKey, IValue);
     if not (IValue.IsEmpty) then
       Response.Content := '{"result":['+IValue+']}' else
-      Response.Content := '404 Requesting page not found!';
+      Response.Content := '{"error":"item not found"}';
     Handled:= true;
   end else Handled:= false;
 
@@ -137,9 +137,12 @@ begin
 
     if not (IValue.IsEmpty) then begin
       Response.ContentType := 'application/json; charset=utf-8';
-      gKeyValueStore[IKey] := IValue;             // See difference in PUT
-      Response.Content := '{"result":[]}';
-      Handled := True;
+      if gKeyValueStore.ContainsKey(IKey) then begin
+        gKeyValueStore[IKey] := IValue;                 // See difference in PUT
+        Response.Content := '{"result":"success"}';
+      end else
+        Response.Content := '{"error":"item not found"}';
+        Handled := True;
     end else Handled := False;
   end;
 
@@ -163,8 +166,8 @@ begin
 
     if not (IValue.IsEmpty) then begin
       Response.ContentType := 'application/json; charset=utf-8';
-      gKeyValueStore.AddOrSetValue(IKey, IValue);  // See difference in POST
-      Response.Content := '{"result":[]}';
+      gKeyValueStore.AddOrSetValue(IKey, IValue);     // See difference in POST
+      Response.Content := '{"result":"success"}';
       Handled := True;
     end else Handled := False;
   end;
